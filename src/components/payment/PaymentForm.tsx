@@ -1,14 +1,13 @@
 
 import { useState } from 'react';
-import { useAccount, useChainId } from 'wagmi';
+import { useChainId } from 'wagmi';
 import { usePayment } from '@/hooks/usePayment';
 import { TokenSelector } from './TokenSelector';
 import { TransactionStatus } from './TransactionStatus';
 import { validateAddress, validateAmount } from '@/utils/formatters';
-import { CreditCard, ArrowRight, Coins, User } from 'lucide-react';
+import { CreditCard, ArrowRight, Coins, Copy, Check } from 'lucide-react';
 
 export function PaymentForm() {
-  const { isConnected } = useAccount();
   const chainId = useChainId();
   const { 
     paymentState, 
@@ -22,21 +21,34 @@ export function PaymentForm() {
   } = usePayment();
 
   const [showTokenSelector, setShowTokenSelector] = useState(false);
+  const [showFullAddress, setShowFullAddress] = useState(false);
+  const [copied, setCopied] = useState(false);
+  
+  const isValidPayment = paymentState.selectedToken && 
+                        validateAmount(paymentState.amount) && 
+                        validateAddress(paymentState.recipient);
 
-  if (!isConnected) {
-    return (
-      <div className="bg-warning/10 border border-warning/20 rounded-2xl p-6">
-        <p className="text-warning-foreground text-center">Please connect your wallet to make payments.</p>
-      </div>
-    );
-  }
+  const copyToClipboard = async (e: React.MouseEvent) => {
+    e.stopPropagation(); // 阻止触发地址切换
+    try {
+      await navigator.clipboard.writeText(paymentState.recipient);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // 2秒后重置状态
+    } catch (err) {
+      console.error('Failed to copy address:', err);
+    }
+  };
 
   if (hash && (isPending || isConfirmed)) {
     return (
       <div className="space-y-4">
         <TransactionStatus hash={hash} />
         <button
-          onClick={resetPayment}
+          onClick={() => {
+            resetPayment();
+            setShowFullAddress(false);
+            setCopied(false);
+          }}
           className="w-full px-4 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors font-semibold"
         >
           Make Another Payment
@@ -118,28 +130,8 @@ export function PaymentForm() {
           )}
         </div>
 
-        {/* Recipient Address Section */}
-        <div className="bg-gradient-to-br from-muted/30 to-slate-50/30 rounded-xl p-4 border border-border/30">
-          <h4 className="font-semibold text-base text-foreground mb-3 flex items-center gap-2">
-            <div className="p-1.5 bg-primary/10 rounded-lg">
-              <User className="h-4 w-4 text-primary" />
-            </div>
-            Recipient Address
-          </h4>
-          <input
-            type="text"
-            value={paymentState.recipient}
-            onChange={(e) => updatePaymentState({ recipient: e.target.value })}
-            placeholder="0x..."
-            className="w-full p-3 bg-card/70 border border-border/50 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-colors font-mono text-foreground placeholder:text-muted-foreground"
-          />
-          {paymentState.recipient && !validateAddress(paymentState.recipient) && (
-            <p className="text-destructive text-sm mt-2">Please enter a valid Ethereum address</p>
-          )}
-        </div>
-
         {/* Payment Summary */}
-        {paymentState.selectedToken && paymentState.amount && validateAmount(paymentState.amount) && paymentState.recipient && validateAddress(paymentState.recipient) && (
+        {isValidPayment && (
           <div className="bg-gradient-to-br from-primary/5 to-blue-50/50 rounded-xl p-4 border border-primary/20">
             <h4 className="font-semibold text-foreground mb-3">Payment Summary</h4>
             <div className="space-y-2 text-sm">
@@ -149,7 +141,29 @@ export function PaymentForm() {
               </div>
               <div className="flex justify-between items-center bg-card/50 rounded-lg p-3">
                 <span className="text-muted-foreground">To:</span>
-                <span className="font-mono text-foreground">{paymentState.recipient.slice(0, 10)}...{paymentState.recipient.slice(-6)}</span>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setShowFullAddress(!showFullAddress)}
+                    className="font-mono text-foreground hover:text-primary transition-colors px-1 py-0.5 rounded text-left break-all"
+                    title="Click to toggle full address"
+                  >
+                    {showFullAddress 
+                      ? paymentState.recipient 
+                      : `${paymentState.recipient.slice(0, 10)}...${paymentState.recipient.slice(-6)}`
+                    }
+                  </button>
+                  <button
+                    onClick={copyToClipboard}
+                    className="p-1 hover:bg-primary/10 rounded transition-colors flex-shrink-0"
+                    title={copied ? "Copied!" : "Copy address"}
+                  >
+                    {copied ? (
+                      <Check className="h-3 w-3 text-green-500" />
+                    ) : (
+                      <Copy className="h-3 w-3 text-muted-foreground hover:text-primary" />
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -165,7 +179,7 @@ export function PaymentForm() {
         {/* Send Button */}
         <button
           onClick={sendPayment}
-          disabled={isPending || !paymentState.selectedToken || !validateAmount(paymentState.amount) || !validateAddress(paymentState.recipient)}
+          disabled={isPending || !isValidPayment}
           className="w-full px-4 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors font-semibold flex items-center justify-center gap-2"
         >
           {isPending ? (

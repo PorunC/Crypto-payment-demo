@@ -20,8 +20,8 @@ export function usePayment() {
   });
 
   const [paymentState, setPaymentState] = useState<PaymentState>({
-    amount: '',
-    recipient: '',
+    amount: import.meta.env.VITE_PAYMENT_DEFAULT_AMOUNT || '',
+    recipient: import.meta.env.VITE_PAYMENT_RECIPIENT_ADDRESS || '',
     selectedToken: null,
     isLoading: false,
     error: null,
@@ -80,8 +80,8 @@ export function usePayment() {
 
   const resetPayment = () => {
     setPaymentState({
-      amount: '',
-      recipient: '',
+      amount: import.meta.env.VITE_PAYMENT_DEFAULT_AMOUNT || '',
+      recipient: import.meta.env.VITE_PAYMENT_RECIPIENT_ADDRESS || '',
       selectedToken: null,
       isLoading: false,
       error: null,

@@ -1,4 +1,4 @@
-import { formatUnits, parseUnits } from 'viem';
+import { formatUnits } from 'viem';
 
 export function formatTokenAmount(amount: bigint, decimals: number, precision = 4): string {
   const formatted = formatUnits(amount, decimals);
@@ -8,19 +8,6 @@ export function formatTokenAmount(amount: bigint, decimals: number, precision = 
   if (num < 0.0001) return '< 0.0001';
   
   return num.toFixed(precision).replace(/\.?0+$/, '');
-}
-
-export function parseTokenAmount(amount: string, decimals: number): bigint {
-  try {
-    return parseUnits(amount, decimals);
-  } catch (error) {
-    throw new Error('Invalid amount format');
-  }
-}
-
-export function formatAddress(address: string): string {
-  if (!address) return '';
-  return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
 export function formatTransactionHash(hash: string): string {

@@ -1,6 +1,6 @@
 # Crypto Payment Demo
 
-A modern cryptocurrency payment application built with RainbowKit, wagmi, and Next.js.
+A modern cryptocurrency payment application built with RainbowKit, wagmi, and Vite.
 
 ## Features
 
@@ -23,21 +23,26 @@ A modern cryptocurrency payment application built with RainbowKit, wagmi, and Ne
 
 1. Install dependencies:
 ```bash
-npm install
+yarn install
 ```
 
-2. Get a WalletConnect Project ID:
+2. Configure environment variables:
+```bash
+cp .env.example .env
+```
+   Edit `.env` file and configure:
+   - `VITE_PAYMENT_RECIPIENT_ADDRESS`: The default recipient address for payments
+   - `VITE_PAYMENT_DEFAULT_AMOUNT`: The default payment amount
+
+3. Get a WalletConnect Project ID:
    - Visit [WalletConnect Cloud](https://cloud.walletconnect.com)
    - Create a new project
    - Copy your Project ID
-
-3. Update the configuration:
-   - Open `src/app/providers.tsx`
-   - Replace `'YOUR_PROJECT_ID'` with your actual WalletConnect Project ID
+   - Update `src/providers.tsx` with your Project ID
 
 4. Start the development server:
 ```bash
-npm run dev
+yarn dev
 ```
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser
@@ -49,9 +54,10 @@ npm run dev
 1. **Connect Wallet**: Click "Connect Wallet" and choose your preferred wallet
 2. **Select Network**: Choose from supported networks (Ethereum, Polygon, etc.)
 3. **Choose Token**: Select which token to send (ETH, MATIC, USDC, etc.)
-4. **Enter Details**: Input the amount and recipient address
-5. **Send Payment**: Confirm the transaction in your wallet
-6. **Track Status**: Monitor the transaction progress in real-time
+4. **Configure Amount**: Adjust the payment amount (pre-configured via environment variables)
+5. **Verify Recipient**: Check the recipient address (configured via environment variables)
+6. **Send Payment**: Confirm the transaction in your wallet
+7. **Track Status**: Monitor the transaction progress in real-time
 
 ### Supported Networks
 
@@ -69,13 +75,24 @@ npm run dev
 - Always verify recipient addresses before sending
 - Start with small amounts when testing
 
+## Environment Variables
+
+The application uses environment variables for payment configuration:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `VITE_PAYMENT_RECIPIENT_ADDRESS` | Default recipient address for payments | `0x742d35Cc6564C0532E4a0D4b0A6b1f0a91e1F4c2` |
+| `VITE_PAYMENT_DEFAULT_AMOUNT` | Default payment amount | `0.01` |
+
+Copy `.env.example` to `.env` and update the values according to your needs.
+
 ## Technology Stack
 
-- **Frontend**: Next.js 14, React, TypeScript
+- **Frontend**: Vite, React, TypeScript
 - **Styling**: Tailwind CSS
 - **Web3**: RainbowKit, wagmi, viem
 - **State Management**: React hooks and Context API
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This application can be deployed on any platform that supports Vite applications, such as Vercel, Netlify, or traditional hosting providers.
