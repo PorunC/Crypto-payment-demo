@@ -1,7 +1,9 @@
 
+import { useState } from 'react';
 import { useWaitForTransactionReceipt, useChainId } from 'wagmi';
 import { formatTransactionHash } from '@/utils/formatters';
 import { CHAIN_CONFIGS } from '@/utils/constants';
+import { Copy, Check } from 'lucide-react';
 
 interface TransactionStatusProps {
   hash: `0x${string}`;
@@ -9,12 +11,24 @@ interface TransactionStatusProps {
 
 export function TransactionStatus({ hash }: TransactionStatusProps) {
   const chainId = useChainId();
+  const [hashCopied, setHashCopied] = useState(false);
+  
   const { data: receipt, isLoading, isSuccess, isError } = useWaitForTransactionReceipt({
     hash,
   });
 
   const chainConfig = CHAIN_CONFIGS[chainId as keyof typeof CHAIN_CONFIGS];
   const explorerUrl = chainConfig ? `${chainConfig.blockExplorer}/tx/${hash}` : '#';
+
+  const copyHashToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(hash);
+      setHashCopied(true);
+      setTimeout(() => setHashCopied(false), 2000); // 2秒后重置状态
+    } catch (err) {
+      console.error('Failed to copy hash:', err);
+    }
+  };
 
   const getStatusIcon = () => {
     if (isLoading) {
@@ -126,10 +140,25 @@ export function TransactionStatus({ hash }: TransactionStatusProps) {
         </a>
         
         <button
-          onClick={() => navigator.clipboard.writeText(hash)}
-          className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
+          onClick={copyHashToClipboard}
+          className={`flex-1 px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium flex items-center justify-center gap-2 ${
+            hashCopied 
+              ? 'bg-green-100 text-green-700 border border-green-200' 
+              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
+          title={hashCopied ? "Copied!" : "Copy hash to clipboard"}
         >
-          Copy Hash
+          {hashCopied ? (
+            <>
+              <Check className="h-4 w-4 animate-pulse" />
+              Copied!
+            </>
+          ) : (
+            <>
+              <Copy className="h-4 w-4" />
+              Copy Hash
+            </>
+          )}
         </button>
       </div>
 
