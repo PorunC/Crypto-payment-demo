@@ -1,15 +1,11 @@
 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount, useBalance } from 'wagmi';
-import { formatTokenAmount } from '@/utils/formatters';
+import { useAccount } from 'wagmi';
 import { Wallet } from 'lucide-react';
 import { CustomConnectButton } from '@/components/ui/CustomConnectButton';
 
 export function WalletConnection() {
   const { address, isConnected } = useAccount();
-  const { data: balance } = useBalance({
-    address,
-  });
 
   if (!isConnected) {
     return (
@@ -46,22 +42,11 @@ export function WalletConnection() {
       
       {address && (
         <div className="bg-gradient-to-br from-muted/30 to-slate-50/30 rounded-xl p-4 border border-border/30">
-          <div className="space-y-3">
-            <div className="flex justify-between items-center bg-card/70 rounded-lg p-3">
-              <span className="text-sm text-muted-foreground">Address</span>
-              <span className="font-mono text-sm text-foreground break-all max-w-[200px] truncate">
-                {address}
-              </span>
-            </div>
-            
-            {balance && (
-              <div className="flex justify-between items-center bg-card/70 rounded-lg p-3">
-                <span className="text-sm text-muted-foreground">Balance</span>
-                <span className="font-semibold text-foreground">
-                  {formatTokenAmount(balance.value, balance.decimals, 4)} {balance.symbol}
-                </span>
-              </div>
-            )}
+          <div className="flex justify-between items-center bg-card/70 rounded-lg p-3">
+            <span className="text-sm text-muted-foreground">Address</span>
+            <span className="font-mono text-sm text-foreground break-all max-w-[200px] truncate">
+              {address}
+            </span>
           </div>
         </div>
       )}

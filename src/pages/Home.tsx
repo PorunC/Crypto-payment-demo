@@ -1,7 +1,6 @@
 import { WalletConnection } from '@/components/wallet/WalletConnection';
 import { AccountInfo } from '@/components/wallet/AccountInfo';
 import { PaymentForm } from '@/components/payment/PaymentForm';
-import { NetworkSwitcher } from '@/components/ui/NetworkSwitcher';
 import { useAccount } from 'wagmi';
 
 export function Home() {
@@ -33,7 +32,6 @@ export function Home() {
           ) : (
             <>
               <AccountInfo />
-              <NetworkSwitcher />
               <PaymentForm />
             </>
           )}
