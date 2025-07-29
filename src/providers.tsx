@@ -1,5 +1,3 @@
-'use client';
-
 import * as React from 'react';
 import {
   RainbowKitProvider,
@@ -21,7 +19,7 @@ const config = getDefaultConfig({
   appName: 'Crypto Payment Demo',
   projectId: 'YOUR_PROJECT_ID',
   chains: [mainnet, polygon, optimism, arbitrum, sepolia],
-  ssr: true,
+  ssr: false,
 });
 
 const queryClient = new QueryClient();

@@ -1,4 +1,3 @@
-'use client';
 
 import { useWaitForTransactionReceipt, useChainId } from 'wagmi';
 import { formatTransactionHash } from '@/utils/formatters';

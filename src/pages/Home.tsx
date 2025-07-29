@@ -1,12 +1,10 @@
-'use client';
-
 import { WalletConnection } from '@/components/wallet/WalletConnection';
 import { AccountInfo } from '@/components/wallet/AccountInfo';
 import { PaymentForm } from '@/components/payment/PaymentForm';
 import { NetworkSwitcher } from '@/components/ui/NetworkSwitcher';
 import { useAccount } from 'wagmi';
 
-export default function Home() {
+export function Home() {
   const { isConnected } = useAccount();
 
   return (
@@ -23,7 +21,7 @@ export default function Home() {
             Crypto Payment
           </h1>
           <p className="text-muted-foreground text-lg max-w-md mx-auto">
-            Send cryptocurrency payments securely using RainbowKit
+            Send cryptocurrency payments securely using RainbowKit & Vite
           </p>
         </div>
 
@@ -53,6 +51,9 @@ export default function Home() {
               </a>
               <a href="https://viem.sh" className="text-primary hover:text-primary/80 transition-colors font-medium">
                 viem
+              </a>
+              <a href="https://vitejs.dev" className="text-primary hover:text-primary/80 transition-colors font-medium">
+                Vite
               </a>
             </div>
             <div className="bg-warning/10 border border-warning/20 rounded-lg p-3 max-w-md mx-auto">

@@ -1,4 +1,3 @@
-'use client';
 
 import { useChainId, useSwitchChain } from 'wagmi';
 import { CHAIN_CONFIGS } from '@/utils/constants';

@@ -1,4 +1,3 @@
-'use client';
 
 import { useBalance } from 'wagmi';
 import { useAccount } from 'wagmi';
