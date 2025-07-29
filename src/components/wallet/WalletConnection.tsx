@@ -3,6 +3,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useBalance } from 'wagmi';
 import { formatTokenAmount } from '@/utils/formatters';
 import { Wallet } from 'lucide-react';
+import { CustomConnectButton } from '@/components/ui/CustomConnectButton';
 
 export function WalletConnection() {
   const { address, isConnected } = useAccount();
@@ -24,7 +25,7 @@ export function WalletConnection() {
             </p>
           </div>
           <div className="flex justify-center pt-4">
-            <ConnectButton />
+            <CustomConnectButton />
           </div>
         </div>
       </div>
@@ -40,7 +41,7 @@ export function WalletConnection() {
           </div>
           Wallet Connected
         </h3>
-        <ConnectButton />
+        <CustomConnectButton />
       </div>
       
       {address && (
