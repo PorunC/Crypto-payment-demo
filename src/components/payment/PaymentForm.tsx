@@ -6,6 +6,7 @@ import { usePayment } from '@/hooks/usePayment';
 import { TokenSelector } from './TokenSelector';
 import { TransactionStatus } from './TransactionStatus';
 import { validateAddress, validateAmount } from '@/utils/formatters';
+import { CreditCard, ArrowRight, Coins, User } from 'lucide-react';
 
 export function PaymentForm() {
   const { isConnected } = useAccount();
@@ -25,8 +26,8 @@ export function PaymentForm() {
 
   if (!isConnected) {
     return (
-      <div className="p-6 bg-yellow-50 rounded-lg border border-yellow-200">
-        <p className="text-yellow-800">Please connect your wallet to make payments.</p>
+      <div className="bg-warning/10 border border-warning/20 rounded-2xl p-6">
+        <p className="text-warning-foreground text-center">Please connect your wallet to make payments.</p>
       </div>
     );
   }
@@ -37,7 +38,7 @@ export function PaymentForm() {
         <TransactionStatus hash={hash} />
         <button
           onClick={resetPayment}
-          className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="w-full px-4 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors font-semibold"
         >
           Make Another Payment
         </button>
@@ -46,108 +47,141 @@ export function PaymentForm() {
   }
 
   return (
-    <div className="space-y-6 p-6 bg-white rounded-lg shadow-lg">
-      <h3 className="text-xl font-semibold text-gray-800">Send Payment</h3>
-
-      {/* Token Selection */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Select Token
-        </label>
-        <button
-          onClick={() => setShowTokenSelector(true)}
-          className="w-full p-3 text-left border border-gray-300 rounded-lg hover:border-gray-400 transition-colors"
-        >
-          {paymentState.selectedToken ? (
-            <div className="flex items-center space-x-2">
-              <span className="font-semibold">{paymentState.selectedToken.symbol}</span>
-              <span className="text-gray-600">{paymentState.selectedToken.name}</span>
+    <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-2xl shadow-lg">
+      <div className="p-6 space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <h3 className="text-xl font-bold text-foreground flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-xl shadow-md">
+              <CreditCard className="h-5 w-5 text-primary" />
             </div>
-          ) : (
-            <span className="text-gray-500">Choose a token to send</span>
-          )}
-        </button>
-
-        {showTokenSelector && (
-          <TokenSelector
-            chainId={chainId}
-            onTokenSelect={(token) => {
-              updatePaymentState({ selectedToken: token });
-              setShowTokenSelector(false);
-            }}
-            onClose={() => setShowTokenSelector(false)}
-          />
-        )}
-      </div>
-
-      {/* Amount Input */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Amount
-        </label>
-        <input
-          type="number"
-          value={paymentState.amount}
-          onChange={(e) => updatePaymentState({ amount: e.target.value })}
-          placeholder="0.0"
-          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          step="any"
-          min="0"
-        />
-        {paymentState.amount && !validateAmount(paymentState.amount) && (
-          <p className="text-red-500 text-sm">Please enter a valid amount</p>
-        )}
-      </div>
-
-      {/* Recipient Address */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Recipient Address
-        </label>
-        <input
-          type="text"
-          value={paymentState.recipient}
-          onChange={(e) => updatePaymentState({ recipient: e.target.value })}
-          placeholder="0x..."
-          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono"
-        />
-        {paymentState.recipient && !validateAddress(paymentState.recipient) && (
-          <p className="text-red-500 text-sm">Please enter a valid Ethereum address</p>
-        )}
-      </div>
-
-      {/* Error Display */}
-      {error && (
-        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-red-800 text-sm">{error}</p>
+            Send Payment
+          </h3>
         </div>
-      )}
 
-      {/* Send Button */}
-      <button
-        onClick={sendPayment}
-        disabled={isPending || !paymentState.selectedToken || !validateAmount(paymentState.amount) || !validateAddress(paymentState.recipient)}
-        className="w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors font-semibold"
-      >
-        {isPending ? 'Sending...' : 'Send Payment'}
-      </button>
-
-      {/* Payment Summary */}
-      {paymentState.selectedToken && paymentState.amount && validateAmount(paymentState.amount) && (
-        <div className="p-3 bg-gray-50 rounded-lg">
-          <h4 className="font-medium text-gray-800 mb-2">Payment Summary</h4>
-          <div className="space-y-1 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Amount:</span>
-              <span>{paymentState.amount} {paymentState.selectedToken.symbol}</span>
+        {/* Token Selection Section */}
+        <div className="bg-gradient-to-br from-muted/30 to-slate-50/30 rounded-xl p-4 border border-border/30">
+          <h4 className="font-semibold text-base text-foreground mb-3 flex items-center gap-2">
+            <div className="p-1.5 bg-primary/10 rounded-lg">
+              <Coins className="h-4 w-4 text-primary" />
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">To:</span>
-              <span className="font-mono">{paymentState.recipient.slice(0, 10)}...{paymentState.recipient.slice(-6)}</span>
+            Select Token
+          </h4>
+          <button
+            onClick={() => setShowTokenSelector(true)}
+            className="w-full p-3 text-left bg-card/70 border border-border/50 rounded-xl hover:bg-card/90 transition-colors"
+          >
+            {paymentState.selectedToken ? (
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                  <span className="text-xs font-semibold text-primary">
+                    {paymentState.selectedToken.symbol.slice(0, 2)}
+                  </span>
+                </div>
+                <div>
+                  <span className="font-semibold text-foreground">{paymentState.selectedToken.symbol}</span>
+                  <span className="text-muted-foreground ml-2">{paymentState.selectedToken.name}</span>
+                </div>
+              </div>
+            ) : (
+              <span className="text-muted-foreground">Choose a token to send</span>
+            )}
+          </button>
+
+          {showTokenSelector && (
+            <TokenSelector
+              chainId={chainId}
+              onTokenSelect={(token) => {
+                updatePaymentState({ selectedToken: token });
+                setShowTokenSelector(false);
+              }}
+              onClose={() => setShowTokenSelector(false)}
+            />
+          )}
+        </div>
+
+        {/* Amount Input Section */}
+        <div className="bg-gradient-to-br from-muted/30 to-slate-50/30 rounded-xl p-4 border border-border/30">
+          <label className="block text-sm font-semibold text-foreground mb-3">
+            Amount
+          </label>
+          <input
+            type="number"
+            value={paymentState.amount}
+            onChange={(e) => updatePaymentState({ amount: e.target.value })}
+            placeholder="0.0"
+            className="w-full p-3 bg-card/70 border border-border/50 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-colors text-foreground placeholder:text-muted-foreground"
+            step="any"
+            min="0"
+          />
+          {paymentState.amount && !validateAmount(paymentState.amount) && (
+            <p className="text-destructive text-sm mt-2">Please enter a valid amount</p>
+          )}
+        </div>
+
+        {/* Recipient Address Section */}
+        <div className="bg-gradient-to-br from-muted/30 to-slate-50/30 rounded-xl p-4 border border-border/30">
+          <h4 className="font-semibold text-base text-foreground mb-3 flex items-center gap-2">
+            <div className="p-1.5 bg-primary/10 rounded-lg">
+              <User className="h-4 w-4 text-primary" />
+            </div>
+            Recipient Address
+          </h4>
+          <input
+            type="text"
+            value={paymentState.recipient}
+            onChange={(e) => updatePaymentState({ recipient: e.target.value })}
+            placeholder="0x..."
+            className="w-full p-3 bg-card/70 border border-border/50 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary/50 transition-colors font-mono text-foreground placeholder:text-muted-foreground"
+          />
+          {paymentState.recipient && !validateAddress(paymentState.recipient) && (
+            <p className="text-destructive text-sm mt-2">Please enter a valid Ethereum address</p>
+          )}
+        </div>
+
+        {/* Payment Summary */}
+        {paymentState.selectedToken && paymentState.amount && validateAmount(paymentState.amount) && paymentState.recipient && validateAddress(paymentState.recipient) && (
+          <div className="bg-gradient-to-br from-primary/5 to-blue-50/50 rounded-xl p-4 border border-primary/20">
+            <h4 className="font-semibold text-foreground mb-3">Payment Summary</h4>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between items-center bg-card/50 rounded-lg p-3">
+                <span className="text-muted-foreground">Amount:</span>
+                <span className="font-semibold text-foreground">{paymentState.amount} {paymentState.selectedToken.symbol}</span>
+              </div>
+              <div className="flex justify-between items-center bg-card/50 rounded-lg p-3">
+                <span className="text-muted-foreground">To:</span>
+                <span className="font-mono text-foreground">{paymentState.recipient.slice(0, 10)}...{paymentState.recipient.slice(-6)}</span>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Error Display */}
+        {error && (
+          <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4">
+            <p className="text-destructive text-sm">{error}</p>
+          </div>
+        )}
+
+        {/* Send Button */}
+        <button
+          onClick={sendPayment}
+          disabled={isPending || !paymentState.selectedToken || !validateAmount(paymentState.amount) || !validateAddress(paymentState.recipient)}
+          className="w-full px-4 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed transition-colors font-semibold flex items-center justify-center gap-2"
+        >
+          {isPending ? (
+            <>
+              <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"></div>
+              Sending...
+            </>
+          ) : (
+            <>
+              Send Payment
+              <ArrowRight className="h-4 w-4" />
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 }

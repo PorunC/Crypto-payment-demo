@@ -10,15 +10,20 @@ export default function Home() {
   const { isConnected } = useAccount();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            Crypto Payment Demo
+        <div className="text-center mb-12">
+          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-primary/20 to-primary/10 rounded-2xl shadow-lg flex items-center justify-center mb-6">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">₿</span>
+            </div>
+          </div>
+          <h1 className="text-4xl font-bold text-foreground mb-3">
+            Crypto Payment
           </h1>
-          <p className="text-gray-600 text-lg">
-            Send cryptocurrency payments using RainbowKit
+          <p className="text-muted-foreground text-lg max-w-md mx-auto">
+            Send cryptocurrency payments securely using RainbowKit
           </p>
         </div>
 
@@ -37,25 +42,24 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <footer className="mt-16 text-center text-gray-500 text-sm">
-          <div className="space-y-2">
-            <p>
-              Built with{' '}
-              <a href="https://rainbowkit.com" className="text-blue-600 hover:underline">
+        <footer className="mt-16 text-center text-muted-foreground text-sm">
+          <div className="space-y-3">
+            <div className="flex justify-center items-center space-x-6">
+              <a href="https://rainbowkit.com" className="text-primary hover:text-primary/80 transition-colors font-medium">
                 RainbowKit
               </a>
-              {' '},{' '}
-              <a href="https://wagmi.sh" className="text-blue-600 hover:underline">
+              <a href="https://wagmi.sh" className="text-primary hover:text-primary/80 transition-colors font-medium">
                 wagmi
               </a>
-              {' '}and{' '}
-              <a href="https://viem.sh" className="text-blue-600 hover:underline">
+              <a href="https://viem.sh" className="text-primary hover:text-primary/80 transition-colors font-medium">
                 viem
               </a>
-            </p>
-            <p className="text-xs">
-              🚨 This is a demo application. Use testnet only. Never send real funds to unknown addresses.
-            </p>
+            </div>
+            <div className="bg-warning/10 border border-warning/20 rounded-lg p-3 max-w-md mx-auto">
+              <p className="text-xs text-warning-foreground">
+                ⚠️ Demo Application - Use testnet only. Never send real funds to unknown addresses.
+              </p>
+            </div>
           </div>
         </footer>
       </div>
