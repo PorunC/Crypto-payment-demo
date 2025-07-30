@@ -10,28 +10,9 @@ export interface PaymentState {
   amount: string;
   recipient: string;
   selectedToken: Token | null;
-  isLoading: boolean;
-  error: string | null;
-  transactionHash: string | null;
+  error?: string | null;
 }
 
-export interface TransactionStatus {
-  hash: string;
-  status: 'pending' | 'success' | 'failed';
-  confirmations: number;
-  timestamp: number;
-}
-
-export interface ChainConfig {
-  id: number;
-  name: string;
-  nativeCurrency: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  blockExplorer: string;
-}
 
 export const SUPPORTED_TOKENS: Record<number, Token[]> = {
   1: [ // Ethereum Mainnet

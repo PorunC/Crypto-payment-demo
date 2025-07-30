@@ -23,9 +23,6 @@ export function usePayment() {
     amount: import.meta.env.VITE_PAYMENT_DEFAULT_AMOUNT || '',
     recipient: import.meta.env.VITE_PAYMENT_RECIPIENT_ADDRESS || '',
     selectedToken: null,
-    isLoading: false,
-    error: null,
-    transactionHash: null,
   });
 
   const updatePaymentState = (updates: Partial<PaymentState>) => {
@@ -50,7 +47,7 @@ export function usePayment() {
     const { amount, recipient, selectedToken } = paymentState;
     
     try {
-      updatePaymentState({ isLoading: true, error: null });
+      updatePaymentState({ error: null });
 
       if (selectedToken!.address === '0x0000000000000000000000000000000000000000') {
         // Native token transfer (ETH, MATIC, etc.)
@@ -73,7 +70,6 @@ export function usePayment() {
     } catch (err) {
       updatePaymentState({
         error: err instanceof Error ? err.message : 'Transaction failed',
-        isLoading: false,
       });
     }
   };
@@ -83,9 +79,6 @@ export function usePayment() {
       amount: import.meta.env.VITE_PAYMENT_DEFAULT_AMOUNT || '',
       recipient: import.meta.env.VITE_PAYMENT_RECIPIENT_ADDRESS || '',
       selectedToken: null,
-      isLoading: false,
-      error: null,
-      transactionHash: null,
     });
   };
 
@@ -97,6 +90,6 @@ export function usePayment() {
     hash,
     isPending: isPending || isConfirming,
     isConfirmed,
-    error: error?.message || paymentState.error,
+    error: error?.message,
   };
 }

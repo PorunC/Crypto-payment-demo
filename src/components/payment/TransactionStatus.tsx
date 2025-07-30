@@ -30,53 +30,28 @@ export function TransactionStatus({ hash }: TransactionStatusProps) {
     }
   };
 
-  const getStatusIcon = () => {
-    if (isLoading) {
-      return (
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      );
-    }
-    
-    if (isSuccess) {
-      return (
-        <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
-          <span className="text-green-600 text-lg">✓</span>
-        </div>
-      );
-    }
-    
-    if (isError) {
-      return (
-        <div className="h-8 w-8 bg-red-100 rounded-full flex items-center justify-center">
-          <span className="text-red-600 text-lg">✗</span>
-        </div>
-      );
-    }
-    
-    return null;
-  };
+  const statusIcon = isLoading ? (
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+  ) : isSuccess ? (
+    <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
+      <span className="text-green-600 text-lg">✓</span>
+    </div>
+  ) : isError ? (
+    <div className="h-8 w-8 bg-red-100 rounded-full flex items-center justify-center">
+      <span className="text-red-600 text-lg">✗</span>
+    </div>
+  ) : null;
 
-  const getStatusText = () => {
-    if (isLoading) return 'Transaction pending...';
-    if (isSuccess) return 'Transaction confirmed!';
-    if (isError) return 'Transaction failed';
-    return 'Unknown status';
-  };
-
-  const getStatusColor = () => {
-    if (isLoading) return 'text-blue-600';
-    if (isSuccess) return 'text-green-600';
-    if (isError) return 'text-red-600';
-    return 'text-gray-600';
-  };
+  const statusText = isLoading ? 'Transaction pending...' : isSuccess ? 'Transaction confirmed!' : isError ? 'Transaction failed' : 'Unknown status';
+  const statusColor = isLoading ? 'text-blue-600' : isSuccess ? 'text-green-600' : isError ? 'text-red-600' : 'text-gray-600';
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-lg border">
       <div className="flex items-center space-x-4 mb-4">
-        {getStatusIcon()}
+        {statusIcon}
         <div>
-          <h3 className={`text-lg font-semibold ${getStatusColor()}`}>
-            {getStatusText()}
+          <h3 className={`text-lg font-semibold ${statusColor}`}>
+            {statusText}
           </h3>
           <p className="text-sm text-gray-600">
             Transaction Hash: {formatTransactionHash(hash)}
@@ -85,37 +60,19 @@ export function TransactionStatus({ hash }: TransactionStatusProps) {
       </div>
 
       {/* Transaction Details */}
-      <div className="space-y-3 mb-4">
-        <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Status:</span>
-          <span className={`font-semibold ${getStatusColor()}`}>
-            {isLoading && 'Pending'}
-            {isSuccess && 'Success'}
-            {isError && 'Failed'}
-          </span>
+      {receipt && (
+        <div className="space-y-3 mb-4">
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">Block Number:</span>
+            <span className="font-mono">{receipt.blockNumber.toString()}</span>
+          </div>
+          
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">Gas Used:</span>
+            <span className="font-mono">{receipt.gasUsed.toString()}</span>
+          </div>
         </div>
-
-        {receipt && (
-          <>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Block Number:</span>
-              <span className="font-mono">{receipt.blockNumber.toString()}</span>
-            </div>
-            
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Gas Used:</span>
-              <span className="font-mono">{receipt.gasUsed.toString()}</span>
-            </div>
-            
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Confirmations:</span>
-              <span className="font-semibold text-green-600">
-                {receipt.status === 'success' ? '✓ Confirmed' : 'Failed'}
-              </span>
-            </div>
-          </>
-        )}
-      </div>
+      )}
 
       {/* Progress Bar */}
       <div className="w-full bg-gray-200 rounded-full h-2 mb-4">

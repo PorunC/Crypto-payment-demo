@@ -1,13 +1,26 @@
 
 import { useState } from 'react';
 import { useChainId } from 'wagmi';
-import { usePayment } from '@/hooks/usePayment';
 import { TokenSelector } from './TokenSelector';
 import { TransactionStatus } from './TransactionStatus';
 import { validateAddress, validateAmount } from '@/utils/formatters';
 import { CreditCard, ArrowRight, Coins, Copy, Check } from 'lucide-react';
+import type { PaymentState } from '@/types/payment.types';
 
-export function PaymentForm() {
+interface PaymentFormProps {
+  paymentHook: {
+    paymentState: PaymentState;
+    updatePaymentState: (updates: Partial<PaymentState>) => void;
+    sendPayment: () => void;
+    resetPayment: () => void;
+    hash: `0x${string}` | undefined;
+    isPending: boolean;
+    isConfirmed: boolean;
+    error: string | null;
+  };
+}
+
+export function PaymentForm({ paymentHook }: PaymentFormProps) {
   const chainId = useChainId();
   const { 
     paymentState, 
@@ -18,7 +31,7 @@ export function PaymentForm() {
     isPending,
     isConfirmed,
     error 
-  } = usePayment();
+  } = paymentHook;
 
   const [showTokenSelector, setShowTokenSelector] = useState(false);
   const [showFullAddress, setShowFullAddress] = useState(false);
@@ -44,11 +57,7 @@ export function PaymentForm() {
       <div className="space-y-4">
         <TransactionStatus hash={hash} />
         <button
-          onClick={() => {
-            resetPayment();
-            setShowFullAddress(false);
-            setCopied(false);
-          }}
+          onClick={() => window.location.reload()}
           className="w-full px-4 py-3 bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-colors font-semibold"
         >
           Make Another Payment
